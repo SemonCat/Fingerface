@@ -2,23 +2,13 @@ package com.edison.fingerface
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.XModuleResources
 import android.hardware.fingerprint.MyFingerprintManager
-import de.robv.android.xposed.*
+import de.robv.android.xposed.IXposedHookLoadPackage
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
-class XposedHandler : IXposedHookZygoteInit, IXposedHookLoadPackage {
-
-    private lateinit var modulePath: String
-    private lateinit var modRes: XModuleResources
-    private lateinit var prefs: XSharedPreferences
-
-    override fun initZygote(startupParam: IXposedHookZygoteInit.StartupParam) {
-        modulePath = startupParam.modulePath
-        modRes = XModuleResources.createInstance(modulePath, null)
-        prefs = XSharedPreferences(BuildConfig.APPLICATION_ID)
-
-    }
+class XposedHandler : IXposedHookLoadPackage {
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         if (lpparam.processName != "android" && lpparam.processName != "com.android.systemui") {
