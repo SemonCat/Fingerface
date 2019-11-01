@@ -10,18 +10,19 @@ import android.os.CancellationSignal
 import android.os.Handler
 import android.util.Log
 import com.edison.fingerface.HandlerExecutor
+import com.edison.fingerface.MainActivity
+import com.edison.fingerface.PreferenceProvider
 
 class MyFingerprintManager(private val context: Context) : FingerprintManager() {
 
     private val manager = context.getSystemService(BiometricManager::class.java)!!
+    private val prefs = PreferenceProvider.getRemote(context)
 
     override fun isHardwareDetected(): Boolean {
         Log.d(TAG, "isHardwareDetected")
         return when (manager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED,
             BiometricManager.BIOMETRIC_SUCCESS -> true
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> false
             else -> false
         }
     }
@@ -30,9 +31,6 @@ class MyFingerprintManager(private val context: Context) : FingerprintManager() 
         Log.d(TAG, "hasEnrolledFingerprints")
         return when (manager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> true
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED,
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> false
             else -> false
         }
     }
@@ -60,6 +58,7 @@ class MyFingerprintManager(private val context: Context) : FingerprintManager() 
                 context.getString(android.R.string.cancel),
                 executor,
                 DialogInterface.OnClickListener { dialog, _ -> dialog.dismiss() })
+            .setConfirmationRequired(prefs.getBoolean(MainActivity.REQUIRE_CONFIRM, false))
             .build()
 
         if (bioCrypto == null) {
