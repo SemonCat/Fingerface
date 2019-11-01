@@ -1,6 +1,6 @@
 # Fingerface
 
-Use faceId to unlock app whick support fingerprint
+Use faceId to unlock app which support fingerprint
 # Requirements
 
 - Android 10.0 or above
