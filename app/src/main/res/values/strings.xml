@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Fingerface</string>
+    <string name="confirmation">Require Confirmation</string>
 </resources>
